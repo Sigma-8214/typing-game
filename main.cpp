@@ -1,13 +1,12 @@
+#include "Windows.h"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <math.h>
 #include <string>
 #include <vector>
 
-#include "Windows.h"
-
 #include "../tui_engine/tui.hpp"
-#include <math.h>
 
 struct FallingWord {
     std::string word;
@@ -55,7 +54,7 @@ struct FallingWord {
 };
 
 struct WordShower {
-    uint8_t max_words = 3;
+    uint8_t max_words = 5;
 
     std::vector<FallingWord> words;
     std::vector<std::string> word_list;
@@ -89,10 +88,10 @@ struct WordShower {
             auto word = &words[i];
             word->render(gui);
 
-            auto typed = word->typed == word->word.size();
-            if (word->position.y > gui.get_height() || typed) {
+            auto was_typed = word->typed == word->word.size();
+            if (word->position.y > gui.get_height() || was_typed) {
                 words.erase(words.begin() + i--);
-                typed += typed;
+                typed += was_typed;
             }
         }
     }
@@ -173,6 +172,12 @@ int main() {
                 Style::unstyled().with_fg(Color::from_hsv(local_hue, 1, 1))
             );
         }
+
+        // == Draw bottom bar ==
+        gui.draw_text(
+            Point2i::create(0, gui.get_height() - 1),
+            "[ESC] Quit | [+/-] Increase/Decrease Max Words ", Style::unstyled()
+        );
 
         // == Show Stats ==
         gui.draw_text(
