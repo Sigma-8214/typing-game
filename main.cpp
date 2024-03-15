@@ -20,15 +20,14 @@ struct FallingWord {
 
     size_t typed;
 
-    static FallingWord
-    create(std::string word, Point2f position, float32_t speed) {
+    static FallingWord create(std::string word, Point2f position) {
         auto self = FallingWord();
 
         self.word = word;
         self.spawn_position = position;
         self.position = position;
 
-        self.speed = speed;
+        self.speed = 1 + static_cast<float32_t>(rand()) / RAND_MAX;
         self.phase = static_cast<float32_t>(rand()) / RAND_MAX;
         self.hue = 0;
 
@@ -40,7 +39,7 @@ struct FallingWord {
     void render(Gui &gui) {
         gui.draw_text(
             static_cast<Point2i>(position), word.substr(0, typed),
-            Style::unstyled().with_fg(Color::from_hsv(hue, 1, 1))
+            Style::unstyled().with_fg(Color::from_hsv(hue + phase, 1, 1))
         );
 
         gui.draw_text(
@@ -65,13 +64,12 @@ struct WordShower {
 
     void spawn_word(uint16_t width) {
         auto word = word_list[rand() % word_list.size()];
-        auto speed = 1.0f;
 
         auto offset = word.size() + 10;
         auto max_width = std::max(static_cast<size_t>(width), offset) - offset;
         auto position = Point2f::create(rand() % max_width, 0);
 
-        words.push_back(FallingWord::create(word, position, speed));
+        words.push_back(FallingWord::create(word, position));
     }
 
     static WordShower create(std::vector<std::string> words) {
@@ -84,14 +82,17 @@ struct WordShower {
         while (words.size() < max_words)
             spawn_word(gui.get_width());
 
+        while (words.size() > max_words)
+            words.pop_back();
+
         for (auto i = 0; i < words.size(); i++) {
             auto word = &words[i];
             word->render(gui);
 
-            if (word->position.y > gui.get_height() ||
-                word->typed == word->word.size()) {
+            auto typed = word->typed == word->word.size();
+            if (word->position.y > gui.get_height() || typed) {
                 words.erase(words.begin() + i--);
-                typed++;
+                typed += typed;
             }
         }
     }
@@ -143,11 +144,20 @@ int main() {
                     return 0;
                 }
 
+                if (key_event.wVirtualKeyCode == VK_OEM_PLUS)
+                    shower.max_words++;
+
+                if (key_event.wVirtualKeyCode == VK_OEM_MINUS)
+                    shower.max_words--;
+
                 auto typed_char = key_event.uChar.AsciiChar;
                 if (typed_char >= 32 && typed_char <= 126)
                     shower.typed_char(typed_char);
             }
         }
+
+        // == Draw the game ==
+        shower.draw(gui);
 
         // == Draw the title ==
         hue += 0.25f * gui.get_delta_time();
@@ -166,11 +176,14 @@ int main() {
 
         // == Show Stats ==
         gui.draw_text(
-            Point2i::create(0, 2), "Typed: " + std::to_string(shower.typed),
+            Point2i::create(0, 2), "Words: " + std::to_string(shower.max_words),
+            Style::unstyled()
+        );
+        gui.draw_text(
+            Point2i::create(0, 3), "Typed: " + std::to_string(shower.typed),
             Style::unstyled()
         );
 
-        shower.draw(gui);
         gui.update();
     }
     return 0;
