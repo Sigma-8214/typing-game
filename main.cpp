@@ -8,111 +8,8 @@
 
 #include "../tui_engine/tui.hpp"
 
-class FallingWord {
-    std::string word;
-    Point2f spawn_position;
-    Point2f position;
-
-    float32_t speed;
-    float32_t phase;
-    float32_t hue;
-
-    size_t typed;
-
-  public:
-    static FallingWord create(std::string word, Point2f position) {
-        auto self = FallingWord();
-
-        self.word = word;
-        self.spawn_position = position;
-        self.position = position;
-
-        self.speed = 1 + static_cast<float32_t>(rand()) / RAND_MAX;
-        self.phase = static_cast<float32_t>(rand()) / RAND_MAX;
-        self.hue = 0;
-
-        self.typed = 0;
-
-        return self;
-    }
-
-    void type(char character) {
-        if (word[typed] == character)
-            typed++;
-    }
-
-    bool is_complete() const { return typed == word.size(); }
-
-    bool is_out_of_range(Gui &gui) const {
-        return position.y > gui.get_height();
-    }
-
-    void render(Gui &gui) {
-        gui.draw_text(
-            static_cast<Point2i>(position), word.substr(0, typed),
-            Style::unstyled().with_fg(Color::from_hsv(hue + phase, 1, 1))
-        );
-
-        gui.draw_text(
-            static_cast<Point2i>(position + Point2f::create(typed, 0)),
-            word.substr(typed, word.size() - typed), Style::unstyled()
-        );
-
-        this->position.y += this->speed * gui.get_delta_time();
-        this->position.x = this->spawn_position.x +
-                           10 * std::sin(this->position.y / 10 + phase);
-        this->hue += 0.25 * gui.get_delta_time();
-    }
-};
-
-class WordShower {
-    std::vector<FallingWord> words;
-    std::vector<std::string> word_list;
-
-    void spawn_word(uint16_t width) {
-        auto word = word_list[rand() % word_list.size()];
-
-        auto offset = word.size() + 10;
-        auto max_width = std::max(static_cast<size_t>(width), offset) - offset;
-        auto position = Point2f::create(rand() % max_width, 0);
-
-        words.push_back(FallingWord::create(word, position));
-    }
-
-  public:
-    uint8_t max_words = 5;
-    uint32_t typed;
-
-    static WordShower create(std::vector<std::string> words) {
-        auto self = WordShower();
-        self.word_list = words;
-        return self;
-    }
-
-    void draw(Gui &gui) {
-        while (words.size() < max_words)
-            spawn_word(gui.get_width());
-
-        while (words.size() > max_words)
-            words.pop_back();
-
-        for (auto i = 0; i < words.size(); i++) {
-            auto &word = words[i];
-            word.render(gui);
-
-            auto was_typed = word.is_complete();
-            if (word.is_out_of_range(gui) || was_typed) {
-                words.erase(words.begin() + i--);
-                typed += was_typed;
-            }
-        }
-    }
-
-    void typed_char(char character) {
-        for (auto &word : words)
-            word.type(character);
-    }
-};
+#include "falling_word.hpp"
+#include "word_shower.hpp"
 
 std::vector<std::string> load_words(std::string path) {
     auto words = std::vector<std::string>();
@@ -124,7 +21,7 @@ std::vector<std::string> load_words(std::string path) {
     return words;
 }
 
-int main() {
+int main() {   
     auto gui = Gui::create();
 
     auto words = load_words("../words/output.txt");
