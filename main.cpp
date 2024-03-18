@@ -8,7 +8,7 @@
 
 #include "../tui_engine/tui.hpp"
 
-struct FallingWord {
+class FallingWord {
     std::string word;
     Point2f spawn_position;
     Point2f position;
@@ -19,6 +19,7 @@ struct FallingWord {
 
     size_t typed;
 
+  public:
     static FallingWord create(std::string word, Point2f position) {
         auto self = FallingWord();
 
@@ -33,6 +34,17 @@ struct FallingWord {
         self.typed = 0;
 
         return self;
+    }
+
+    void type(char character) {
+        if (word[typed] == character)
+            typed++;
+    }
+
+    bool is_complete() const { return typed == word.size(); }
+
+    bool is_out_of_range(Gui &gui) const {
+        return position.y > gui.get_height();
     }
 
     void render(Gui &gui) {
@@ -53,13 +65,9 @@ struct FallingWord {
     }
 };
 
-struct WordShower {
-    uint8_t max_words = 5;
-
+class WordShower {
     std::vector<FallingWord> words;
     std::vector<std::string> word_list;
-
-    uint32_t typed;
 
     void spawn_word(uint16_t width) {
         auto word = word_list[rand() % word_list.size()];
@@ -70,6 +78,10 @@ struct WordShower {
 
         words.push_back(FallingWord::create(word, position));
     }
+
+  public:
+    uint8_t max_words = 5;
+    uint32_t typed;
 
     static WordShower create(std::vector<std::string> words) {
         auto self = WordShower();
@@ -85,11 +97,11 @@ struct WordShower {
             words.pop_back();
 
         for (auto i = 0; i < words.size(); i++) {
-            auto word = &words[i];
-            word->render(gui);
+            auto &word = words[i];
+            word.render(gui);
 
-            auto was_typed = word->typed == word->word.size();
-            if (word->position.y > gui.get_height() || was_typed) {
+            auto was_typed = word.is_complete();
+            if (word.is_out_of_range(gui) || was_typed) {
                 words.erase(words.begin() + i--);
                 typed += was_typed;
             }
@@ -97,10 +109,8 @@ struct WordShower {
     }
 
     void typed_char(char character) {
-        for (auto &word : words) {
-            if (word.word[word.typed] == character)
-                word.typed++;
-        }
+        for (auto &word : words)
+            word.type(character);
     }
 };
 
