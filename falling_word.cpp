@@ -1,3 +1,5 @@
+#include "consts.hpp"
+#include "lab_color.hpp"
 #include "falling_word.hpp"
 
 FallingWord FallingWord::create(std::string word, Point2f position) {
@@ -30,7 +32,7 @@ bool FallingWord::is_out_of_range(Gui &gui) const {
 void FallingWord::render(Gui &gui) {
     gui.draw_text(
         static_cast<Point2i>(position), word.substr(0, typed),
-        Style::unstyled().with_fg(Color::from_hsv(hue + phase, 1, 1))
+        Style::unstyled().with_fg(COLOR_START.hue_shift((hue + phase) * 2 * PI).to_color())
     );
 
     gui.draw_text(

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <math.h>
-#include <string>
+#include <string>
 
 #include "../tui_engine/tui.hpp"
 
@@ -16,7 +16,7 @@ class FallingWord {
 
     size_t typed;
 
-public:
+  public:
     static FallingWord create(std::string word, Point2f position);
 
     bool is_complete() const;
