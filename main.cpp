@@ -10,6 +10,8 @@
 
 #include "falling_word.hpp"
 #include "word_shower.hpp"
+#include "lab_color.hpp"
+#include "consts.hpp"
 
 std::vector<std::string> load_words(std::string path) {
     auto words = std::vector<std::string>();
@@ -19,6 +21,23 @@ std::vector<std::string> load_words(std::string path) {
         words.push_back(line);
 
     return words;
+}
+
+void draw_rainbow_text(Point2i pos, std::string text, float32_t* hue, Gui& gui) {
+    *hue += 0.25f * gui.get_delta_time();
+    for (auto i = 0; i < text.size(); i++) {
+        auto local_hue =
+            *hue - (static_cast<float32_t>(i) / text.size() / 2);
+        if (local_hue < 0)
+            local_hue += 1;
+
+        auto color = COLOR_START.hue_shift(local_hue * 2 * PI).to_color();
+
+        gui.set(
+            text[i], pos + Point2i::create(i, 0),
+            Style::unstyled().with_fg(color)
+        );
+    }    
 }
 
 int main() {   
@@ -66,19 +85,8 @@ int main() {
         shower.draw(gui);
 
         // == Draw the title ==
-        hue += 0.25f * gui.get_delta_time();
         const auto text = std::string("Word Shower");
-        for (auto i = 0; i < text.size(); i++) {
-            auto local_hue =
-                hue - (static_cast<float32_t>(i) / text.size() / 2);
-            if (local_hue < 0)
-                local_hue += 1;
-
-            gui.set(
-                text[i], Point2i::create(i, 0),
-                Style::unstyled().with_fg(Color::from_hsv(local_hue, 1, 1))
-            );
-        }
+        draw_rainbow_text(Point2i::origin(), text, &hue, gui);
 
         // == Draw bottom bar ==
         gui.draw_text(
