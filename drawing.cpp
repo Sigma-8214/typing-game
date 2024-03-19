@@ -18,6 +18,3 @@ void draw_rainbow_text(
         );
     }
 }
-
-
-

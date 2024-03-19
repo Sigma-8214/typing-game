@@ -15,19 +15,33 @@ void MenuScreen::render(State &state, Gui &gui) {
             balls.push_back(Ball::create(center));
     }
 
-    for (auto& ball: balls)
+    for (auto &ball : balls)
         ball.render(gui);
-        
+
     title_hue += 0.25 * gui.get_delta_time();
-    draw_rainbow_text(center - Point2i::create(10, 0), std::string("Generic Typing Game"), &title_hue, gui);
+    draw_rainbow_text(
+        center - Point2i::create(10, 0), std::string("Generic Typing Game"),
+        &title_hue, gui
+    );
 
-    gui.draw_text(center - Point2i::create(7, -2), std::string("[ENTER] Start"), Style::unstyled());
-    gui.draw_text(center - Point2i::create(5, -3), std::string("[ESC] Quit"), Style::unstyled());
+    gui.draw_text(
+        center - Point2i::create(7, -2), std::string("[ENTER] Start"),
+        Style::unstyled()
+    );
+    gui.draw_text(
+        center - Point2i::create(5, -3), std::string("[ESC] Quit"),
+        Style::unstyled()
+    );
 
-    gui.draw_text(gui.get_size() - Point2i::create(25, 1), "Created By: Connor Slade", Style::unstyled());
+    gui.draw_text(
+        gui.get_size() - Point2i::create(25, 1), "Created By: Connor Slade",
+        Style::unstyled()
+    );
 }
 
 void MenuScreen::on_key(State &state, KEY_EVENT_RECORD key) {
     if (key.bKeyDown && key.wVirtualKeyCode == VK_ESCAPE)
         state.exit = true;
+    else if (key.bKeyDown &&key.mVirtualKeyCode = VK_ENTER) {
+    }
 }
