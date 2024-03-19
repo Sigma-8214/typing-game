@@ -1,6 +1,7 @@
 #include "Windows.h"
 
 #include "ui.hpp"
+#include "screen_menu.hpp"
 
 void Ui::handle_inputs() {
     auto events = new DWORD();
@@ -13,7 +14,7 @@ void Ui::handle_inputs() {
 
     for (auto i = 0; i < *events; i++) {
         if (event_buffer[i].EventType == KEY_EVENT)
-            this->screen->on_key(state, event_buffer[i].Event.KeyEvent);
+            this->screen->on_key(*this, event_buffer[i].Event.KeyEvent);
     }
 }
 
@@ -27,15 +28,17 @@ Ui Ui::create(State state) {
 
 void Ui::run() {
     for (;;) {
-        if (this->state.exit) {
+        if (!running) {
             this->gui.cleanup();
             break;
         }
 
         this->handle_inputs();
-        this->screen->render(state, gui);
+        this->screen->render(*this, gui);
 
         // Will block to reach target framerate
         gui.update();
     }
 }
+
+void Ui::exit() { this->running = false; }
