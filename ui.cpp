@@ -27,6 +27,11 @@ Ui Ui::create(State state) {
 
 void Ui::run() {
     for (;;) {
+        if (this->state.exit) {
+            this->gui.cleanup();
+            break;
+        }
+
         this->handle_inputs();
         this->screen->render(state, gui);
 
