@@ -1,5 +1,5 @@
-#include "screen.hpp"
 #include "drawing.hpp"
+#include "screen.hpp"
 
 #include "screen_menu.hpp"
 
@@ -26,14 +26,19 @@ void MenuScreen::render(Ui &ui, Gui &gui) {
         &title_hue, gui
     );
 
-    gui.draw_text(
-        center - Point2i::create(7, -2), std::string("[ENTER] Start"),
-        Style::unstyled()
-    );
-    gui.draw_text(
-        center - Point2i::create(5, -3), std::string("[ESC] Quit"),
-        Style::unstyled()
-    );
+    const auto lines = {
+        std::make_tuple(std::string("[ENTER] Start"), 6),
+        std::make_tuple(std::string("[ESC] Quit"), 4),
+        std::make_tuple(std::string("[S] Scores"), 2),
+    };
+
+    for (auto line = lines.begin(); line != lines.end(); line++) {
+        auto line_num = line - lines.begin();
+        gui.draw_text(
+            center - Point2i::create(std::get<1>(*line), -line_num - 2),
+            std::get<0>(*line), Style::unstyled()
+        );
+    }
 
     gui.draw_text(
         gui.get_size() - Point2i::create(25, 1), "Created By: Connor Slade",
@@ -51,7 +56,8 @@ void MenuScreen::on_key(Ui &ui, KEY_EVENT_RECORD key) {
 
 Ball Ball::create(Point2i size) {
     auto self = Ball();
-    self.pos = static_cast<Point2f>(Point2i::create(rand() % size.x, rand() % size.y));
+    self.pos =
+        static_cast<Point2f>(Point2i::create(rand() % size.x, rand() % size.y));
     auto x_vel = 20 * static_cast<float32_t>(rand()) / RAND_MAX - 10;
     auto y_vel = 10 * static_cast<float32_t>(rand()) / RAND_MAX - 5;
     self.vel = Point2f::create(x_vel, y_vel);

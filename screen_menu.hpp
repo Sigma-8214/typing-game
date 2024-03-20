@@ -25,4 +25,3 @@ class MenuScreen : public Screen {
     void render(Ui &ui, Gui &gui);
     void on_key(Ui &ui, KEY_EVENT_RECORD key);
 };
-
