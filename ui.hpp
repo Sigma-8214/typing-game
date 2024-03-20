@@ -14,7 +14,7 @@ class Screen;
 class Ui {
     Gui gui;
     bool running;
-    std::unique_ptr<Screen> screen;
+    std::shared_ptr<Screen> screen;
 
     void handle_inputs();
 
@@ -24,6 +24,7 @@ class Ui {
     static Ui create(State state);
     void run();
 
-    void set_screen(std::unique_ptr<Screen> screen);
+    void set_screen(std::shared_ptr<Screen> screen);
+    std::shared_ptr<Screen> get_screen();
     void exit();
 };

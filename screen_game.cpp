@@ -1,5 +1,6 @@
 #include "screen_game.hpp"
 #include "drawing.hpp"
+#include "screen_confirm.hpp"
 #include "word_shower.hpp"
 
 GameScreen GameScreen::create(Ui &ui) {
@@ -37,7 +38,16 @@ void GameScreen::on_key(Ui &ui, KEY_EVENT_RECORD key) {
         return;
 
     if (key.wVirtualKeyCode == VK_ESCAPE) {
-        ui.exit();
+        auto old_screen = ui.get_screen();
+        ui.set_screen(std::make_unique<ConfirmScreen>(ConfirmScreen::create(
+            "Are you sure you want to exit?", {"No", "Yes"},
+            [old_screen](Ui &ui, uint8_t option) {
+                if (option == 1)
+                    ui.exit();
+                else if (option == 0)
+                    ui.set_screen(old_screen);
+            }
+        )));
         return;
     }
 

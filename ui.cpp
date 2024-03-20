@@ -23,7 +23,7 @@ Ui Ui::create(State state) {
     self.gui = Gui::create();
     self.running = true;
     self.state = state;
-    self.screen = std::make_unique<MenuScreen>(MenuScreen::create());
+    self.screen = std::make_shared<MenuScreen>(MenuScreen::create());
     return self;
 }
 
@@ -42,8 +42,10 @@ void Ui::run() {
     }
 }
 
-void Ui::set_screen(std::unique_ptr<Screen> screen) {
+void Ui::set_screen(std::shared_ptr<Screen> screen) {
     this->screen = std::move(screen);
 }
+
+std::shared_ptr<Screen> Ui::get_screen() { return this->screen; }
 
 void Ui::exit() { this->running = false; }
