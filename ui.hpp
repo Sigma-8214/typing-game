@@ -13,7 +13,7 @@ class Screen;
 
 class Ui {
     Gui gui;
-    bool running = true;
+    bool running;
     std::unique_ptr<Screen> screen;
 
     void handle_inputs();
@@ -22,7 +22,8 @@ class Ui {
     State state;
 
     static Ui create(State state);
-
     void run();
+
+    void set_screen(std::unique_ptr<Screen> screen);
     void exit();
 };

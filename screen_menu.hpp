@@ -5,17 +5,17 @@
 #include "misc.hpp"
 #include "ui.hpp"
 
-struct Ball {
-    Point2f pos;
-    Point2f vel;
-
-    static Ball create(Point2i pos);
-
-    Ball clone();
-    void render(Gui &gui);
-};
-
 class MenuScreen : public Screen {
+    struct Ball {
+        Point2f pos;
+        Point2f vel;
+
+        static Ball create(Point2i pos);
+
+        Ball clone();
+        void render(Gui &gui);
+    };
+
     float32_t title_hue;
     std::vector<Ball> balls;
 

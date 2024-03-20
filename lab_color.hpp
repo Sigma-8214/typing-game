@@ -21,9 +21,9 @@ class OkLab {
 
 class Rgb {
   public:
-    float r;
-    float g;
-    float b;
+    float32_t r;
+    float32_t g;
+    float32_t b;
 
     static Rgb create(float32_t r, float32_t g, float32_t b);
     static Rgb from_oklab(OkLab c);

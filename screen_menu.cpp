@@ -1,6 +1,7 @@
 #include "drawing.hpp"
 #include "screen.hpp"
 
+#include "screen_game.hpp"
 #include "screen_menu.hpp"
 
 MenuScreen MenuScreen::create() {
@@ -49,12 +50,11 @@ void MenuScreen::render(Ui &ui, Gui &gui) {
 void MenuScreen::on_key(Ui &ui, KEY_EVENT_RECORD key) {
     if (key.bKeyDown && key.wVirtualKeyCode == VK_ESCAPE)
         ui.exit();
-    else if (key.bKeyDown && key.wVirtualKeyCode == VK_RETURN) {
-        // TODO: Open game screen
-    }
+    else if (key.bKeyDown && key.wVirtualKeyCode == VK_RETURN)
+        ui.set_screen(std::make_unique<GameScreen>(GameScreen::create(ui)));
 }
 
-Ball Ball::create(Point2i size) {
+MenuScreen::Ball MenuScreen::Ball::create(Point2i size) {
     auto self = Ball();
     self.pos =
         static_cast<Point2f>(Point2i::create(rand() % size.x, rand() % size.y));
@@ -64,14 +64,14 @@ Ball Ball::create(Point2i size) {
     return self;
 }
 
-Ball Ball::clone() {
+MenuScreen::Ball MenuScreen::Ball::clone() {
     auto self = Ball();
     self.pos = pos;
     self.vel = vel;
     return self;
 }
 
-void Ball::render(Gui &gui) {
+void MenuScreen::Ball::render(Gui &gui) {
     pos.x += vel.x * gui.get_delta_time();
     pos.y += vel.y * gui.get_delta_time();
 

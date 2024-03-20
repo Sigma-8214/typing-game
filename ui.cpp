@@ -1,7 +1,7 @@
 #include "Windows.h"
 
-#include "ui.hpp"
 #include "screen_menu.hpp"
+#include "ui.hpp"
 
 void Ui::handle_inputs() {
     auto events = new DWORD();
@@ -21,6 +21,7 @@ void Ui::handle_inputs() {
 Ui Ui::create(State state) {
     auto self = Ui();
     self.gui = Gui::create();
+    self.running = true;
     self.state = state;
     self.screen = std::make_unique<MenuScreen>(MenuScreen::create());
     return self;
@@ -39,6 +40,10 @@ void Ui::run() {
         // Will block to reach target framerate
         gui.update();
     }
+}
+
+void Ui::set_screen(std::unique_ptr<Screen> screen) {
+    this->screen = std::move(screen);
 }
 
 void Ui::exit() { this->running = false; }
