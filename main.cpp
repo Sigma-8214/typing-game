@@ -1,5 +1,4 @@
 #include "Windows.h"
-#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <math.h>
@@ -27,7 +26,7 @@ std::vector<std::string> load_words(std::string path) {
 
 int main() {
     auto words = load_words("../words/output.txt");
-    auto state = State::create(words);
+    auto state = State::create(words, "scores.bin");
     auto ui = Ui::create(state);
 
     ui.run();

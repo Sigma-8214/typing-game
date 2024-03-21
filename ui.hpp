@@ -25,6 +25,7 @@ class Ui {
     void run();
 
     void push_screen(std::unique_ptr<Screen> screen);
+    void pop_screen(size_t count);
     std::unique_ptr<Screen> pop_screen();
     std::unique_ptr<Screen> swap_screen(std::unique_ptr<Screen> screen);
     void exit();

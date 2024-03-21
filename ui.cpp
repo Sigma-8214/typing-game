@@ -35,6 +35,7 @@ void Ui::run() {
         if (!running) {
             this->gui.cleanup();
             std::cout << "\x1b\[?1049l";
+            state.scores.save(state.score_path);
             break;
         }
 
@@ -48,6 +49,11 @@ void Ui::run() {
 
 void Ui::push_screen(std::unique_ptr<Screen> screen) {
     this->screens.push_back(std::move(screen));
+}
+
+void Ui::pop_screen(size_t count) {
+    for (auto i = 0; i < count; i++)
+        this->screens.pop_back();
 }
 
 std::unique_ptr<Screen> Ui::pop_screen() {

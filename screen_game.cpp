@@ -1,6 +1,8 @@
 #include "screen_game.hpp"
+#include "consts.hpp"
 #include "drawing.hpp"
 #include "screen_confirm.hpp"
+#include "screen_new_high_score.hpp"
 #include "word_shower.hpp"
 
 GameScreen GameScreen::create(Ui &ui) {
@@ -38,12 +40,18 @@ void GameScreen::on_key(Ui &ui, KEY_EVENT_RECORD key) {
         return;
 
     if (key.wVirtualKeyCode == VK_ESCAPE) {
+        auto score = shower.typed;
         ui.push_screen(std::make_unique<ConfirmScreen>(ConfirmScreen::create(
             "Are you sure you want to exit?", {"No", "Yes"},
-            [](Ui &ui, uint8_t option) {
-                if (option == 1)
-                    ui.exit();
-                else if (option == 0)
+            [score](Ui &ui, uint8_t option) {
+                if (option == 1) {
+                    ui.pop_screen();
+                    ui.pop_screen();
+                    if (ui.state.scores.is_high_score(score, HIGH_SCORES_COUNT))
+                        ui.push_screen(std::make_unique<NewHighScoreScreen>(
+                            NewHighScoreScreen::create(score)
+                        ));
+                } else if (option == 0)
                     ui.pop_screen();
             }
         )));

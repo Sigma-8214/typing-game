@@ -3,6 +3,7 @@
 
 #include "screen_game.hpp"
 #include "screen_menu.hpp"
+#include "screen_scores.hpp"
 
 MenuScreen MenuScreen::create() {
     auto self = MenuScreen();
@@ -42,16 +43,23 @@ void MenuScreen::render(Ui &ui, Gui &gui) {
     }
 
     gui.draw_text(
-        gui.get_size() - Point2i::create(25, 1), "Created By: Connor Slade",
+        gui.get_size() - Point2i::create(24, 1), "Created By: Connor Slade",
         Style::unstyled()
     );
 }
 
 void MenuScreen::on_key(Ui &ui, KEY_EVENT_RECORD key) {
-    if (key.bKeyDown && key.wVirtualKeyCode == VK_ESCAPE)
+    if (!key.bKeyDown)
+        return;
+
+    // clang-format off
+    if (key.wVirtualKeyCode == VK_ESCAPE)
         ui.exit();
-    else if (key.bKeyDown && key.wVirtualKeyCode == VK_RETURN)
+    else if (key.wVirtualKeyCode == VK_RETURN)
         ui.push_screen(std::make_unique<GameScreen>(GameScreen::create(ui)));
+    else if (key.wVirtualKeyCode == 'S')
+        ui.push_screen(std::make_unique<ScoresScreen>(ScoresScreen::create(ui)));
+    // clang-format on
 }
 
 MenuScreen::Ball MenuScreen::Ball::create(Point2i size) {
