@@ -7,7 +7,7 @@ void draw_rainbow_text(
     *hue += 0.25f * gui.get_delta_time();
     for (auto i = 0; i < text.size(); i++) {
         auto color =
-            rainbowColor(hue, static_cast<float32_t>(i) / text.size() / 2);
+            rainbow_color(*hue, static_cast<float32_t>(i) / text.size() / 2);
 
         gui.set(
             text[i], pos + Point2i::create(i, 0),
@@ -16,8 +16,8 @@ void draw_rainbow_text(
     }
 }
 
-Color rainbowColor(float32_t *hue, float32_t percent) {
-    auto local_hue = *hue - percent;
+Color rainbow_color(float32_t hue, float32_t percent) {
+    auto local_hue = hue - percent;
     if (local_hue < 0)
         local_hue += 1;
 

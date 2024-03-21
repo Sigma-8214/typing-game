@@ -3,10 +3,12 @@
 #include <vector>
 
 #include "falling_word.hpp"
+#include "particle_emitter.hpp"
 
 class WordShower {
     std::vector<FallingWord> words;
     std::vector<std::string> word_list;
+    ParticleEmitter confetti;
 
     void spawn_word(uint16_t width);
 

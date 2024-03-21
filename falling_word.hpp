@@ -21,6 +21,8 @@ class FallingWord {
 
     bool is_complete() const;
     bool is_out_of_range(Gui &gui) const;
+    size_t get_length() const;
+    Point2f get_position() const;
 
     void type(char character);
     void render(Gui &gui);

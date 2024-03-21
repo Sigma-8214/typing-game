@@ -18,6 +18,7 @@ void WordShower::spawn_word(uint16_t width) {
 WordShower WordShower::create(std::vector<std::string> words) {
     auto self = WordShower();
     self.word_list = words;
+    self.confetti = ParticleEmitter::create(CONFETTI);
     return self;
 }
 
@@ -28,15 +29,29 @@ void WordShower::draw(Gui &gui) {
     while (words.size() > max_words)
         words.pop_back();
 
+    confetti.render(gui);
+
     for (auto i = 0; i < words.size(); i++) {
         auto &word = words[i];
         word.render(gui);
 
         auto was_typed = word.is_complete();
-        if (word.is_out_of_range(gui) || was_typed) {
-            words.erase(words.begin() + i--);
-            typed += was_typed;
+        typed += was_typed;
+
+        if (was_typed) {
+            for (auto i = 0; i < 10; i++)
+                confetti.emit(
+                    word.get_position() +
+                        Point2f::create(word.get_length() / 2, 0),
+                    Point2f::create(
+                        5 * static_cast<float32_t>(rand()) / RAND_MAX - 2.5,
+                        5 * static_cast<float32_t>(rand()) / RAND_MAX - 2.5
+                    )
+                );
         }
+
+        if (word.is_out_of_range(gui) || was_typed)
+            words.erase(words.begin() + i--);
     }
 }
 

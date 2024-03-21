@@ -1,18 +1,8 @@
-#include "Windows.h"
 #include <fstream>
-#include <iostream>
-#include <math.h>
 #include <string>
 #include <vector>
 
-#include "../tui_engine/tui.hpp"
-
-#include "consts.hpp"
-#include "falling_word.hpp"
-#include "lab_color.hpp"
-#include "screen.hpp"
 #include "ui.hpp"
-#include "word_shower.hpp"
 
 std::vector<std::string> load_words(std::string path) {
     auto words = std::vector<std::string>();
@@ -25,6 +15,8 @@ std::vector<std::string> load_words(std::string path) {
 }
 
 int main() {
+    srand(time(0));
+
     auto words = load_words("../words/output.txt");
     auto state = State::create(words, "scores.bin");
     auto ui = Ui::create(state);
