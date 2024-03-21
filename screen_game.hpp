@@ -1,10 +1,10 @@
 #pragma once
 
+#include "game.hpp"
 #include "ui.hpp"
-#include "word_shower.hpp"
 
 class GameScreen : public Screen {
-    WordShower shower;
+    Game shower;
     std::chrono::time_point<std::chrono::steady_clock> game_started;
     float32_t hue;
 

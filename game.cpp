@@ -3,28 +3,35 @@
 
 #include "../tui_engine/tui.hpp"
 
-#include "word_shower.hpp"
+#include "game.hpp"
 
 const auto CONFETTI = ParticleConfig::create(2, 1, {'*', '~', '.', '-'});
 
-void WordShower::spawn_word(uint16_t width) {
-    auto word = word_list[rand() % word_list.size()];
+void Game::spawn_word(uint16_t width) {
+    std::string word;
+    uint16_t attempts = 20;
+    do
+        word = word_list[rand() % word_list.size()];
+    while (!first_chars.insert(word[0]).second && attempts-- > 0);
+
+    if (attempts == 0)
+        return;
 
     auto offset = word.size() + 10;
     auto max_width = std::max(static_cast<size_t>(width), offset) - offset;
     auto position = Point2f::create(rand() % max_width, 0);
 
-    words.push_back(FallingWord::create(word, position));
+    words.push_back(GameWord::create(word, position));
 }
 
-WordShower WordShower::create(std::vector<std::string> words) {
-    auto self = WordShower();
+Game Game::create(std::vector<std::string> words) {
+    auto self = Game();
     self.word_list = words;
     self.confetti = ParticleEmitter::create(CONFETTI);
     return self;
 }
 
-void WordShower::draw(Gui &gui) {
+void Game::draw(Gui &gui) {
     while (words.size() < max_words)
         spawn_word(gui.get_width());
 
@@ -35,7 +42,7 @@ void WordShower::draw(Gui &gui) {
 
     for (auto i = 0; i < words.size(); i++) {
         auto &word = words[i];
-        word.render(gui);
+        word.render(gui, i == current_word);
 
         auto was_typed = word.is_complete();
         typed += was_typed;
@@ -52,12 +59,25 @@ void WordShower::draw(Gui &gui) {
                 );
         }
 
-        if (word.is_out_of_range(gui) || was_typed)
+        if (word.is_out_of_range(gui) || was_typed) {
+            first_chars.erase(word.get_word()[0]);
             words.erase(words.begin() + i--);
+            current_word = std::nullopt;
+        }
     }
 }
 
-void WordShower::typed_char(char character) {
-    for (auto &word : words)
-        word.type(character);
+void Game::typed_char(char character) {
+    if (current_word.has_value()) {
+        words[current_word.value()].type(character);
+        return;
+    }
+
+    for (auto i = 0; i < words.size(); i++) {
+        if (words[i].get_word()[0] == character) {
+            current_word = i;
+            words[i].type(character);
+            break;
+        }
+    }
 }

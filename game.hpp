@@ -1,12 +1,17 @@
 #pragma once
 
+#include <optional>
+#include <set>
 #include <vector>
 
-#include "falling_word.hpp"
+#include "game_word.hpp"
 #include "particle_emitter.hpp"
 
-class WordShower {
-    std::vector<FallingWord> words;
+class Game {
+    std::vector<GameWord> words;
+    std::set<char> first_chars;
+    std::optional<size_t> current_word;
+
     std::vector<std::string> word_list;
     ParticleEmitter confetti;
 
@@ -16,7 +21,7 @@ class WordShower {
     uint8_t max_words = 5;
     uint32_t typed;
 
-    static WordShower create(std::vector<std::string> words);
+    static Game create(std::vector<std::string> words);
 
     void draw(Gui &gui);
     void typed_char(char character);

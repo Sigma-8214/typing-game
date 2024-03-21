@@ -1,13 +1,13 @@
 #include "screen_game.hpp"
 #include "consts.hpp"
 #include "drawing.hpp"
+#include "game.hpp"
 #include "screen_confirm.hpp"
 #include "screen_new_high_score.hpp"
-#include "word_shower.hpp"
 
 GameScreen GameScreen::create(Ui &ui) {
     auto self = GameScreen();
-    self.shower = WordShower::create(ui.state.words);
+    self.shower = Game::create(ui.state.words);
     self.game_started = std::chrono::steady_clock::now();
     self.hue = 0;
     return self;

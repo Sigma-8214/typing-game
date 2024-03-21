@@ -5,7 +5,7 @@
 
 #include "../tui_engine/tui.hpp"
 
-class FallingWord {
+class GameWord {
     std::string word;
     Point2f spawn_position;
     Point2f position;
@@ -17,13 +17,14 @@ class FallingWord {
     size_t typed;
 
   public:
-    static FallingWord create(std::string word, Point2f position);
+    static GameWord create(std::string word, Point2f position);
 
     bool is_complete() const;
     bool is_out_of_range(Gui &gui) const;
     size_t get_length() const;
     Point2f get_position() const;
+    std::string get_word() const;
 
     void type(char character);
-    void render(Gui &gui);
+    void render(Gui &gui, bool current_word);
 };
