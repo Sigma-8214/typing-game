@@ -1,11 +1,15 @@
 #include "screen_new_high_score.hpp"
 #include "drawing.hpp"
+#include "particle_emitter.hpp"
 #include "screen_confirm.hpp"
 #include "screen_scores.hpp"
+
+const auto CONFETTI = ParticleConfig::create(8, 3, {'*', '~', '.', '-'});
 
 NewHighScoreScreen NewHighScoreScreen::create(uint32_t score) {
     auto self = NewHighScoreScreen();
     self.score = score;
+    self.confetti = ParticleEmitter::create(CONFETTI);
     return self;
 }
 
@@ -13,11 +17,33 @@ void NewHighScoreScreen::render(Ui &ui, Gui &gui) {
     auto size = gui.get_size();
     auto center = Point2i::create(size.x / 2, size.y / 3);
 
+    confetti.render(gui);
+
     const auto title = std::string("New High Score!");
     gui.draw_text(
         center - Point2i::create(title.length() / 2, 0), title,
         Style::unstyled()
     );
+
+    if (init) {
+        init = false;
+
+        auto offset = Point2i::create(title.length() / 2, 0);
+        auto title_right = center + offset;
+        auto title_left = center - offset;
+
+        for (auto i = 0; i < 20; i++) {
+            auto velocity = Point2f::create(
+                5 * static_cast<float32_t>(rand()) / RAND_MAX + 10,
+                5 * static_cast<float32_t>(rand()) / RAND_MAX - 10
+            );
+
+            confetti.emit(static_cast<Point2f>(title_right), velocity);
+
+            velocity.x *= -1;
+            confetti.emit(static_cast<Point2f>(title_left), velocity);
+        }
+    }
 
     const auto message = std::string("Enter your name then press [Enter]");
     gui.draw_text(

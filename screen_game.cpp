@@ -51,7 +51,8 @@ void GameScreen::on_key(Ui &ui, KEY_EVENT_RECORD key) {
                 if (option == 1) {
                     ui.pop_screen();
                     ui.pop_screen();
-                    if (ui.state.scores.is_high_score(score, HIGH_SCORES_COUNT))
+                    if (score > 0 &&
+                        ui.state.scores.is_high_score(score, HIGH_SCORES_COUNT))
                         ui.push_screen(std::make_unique<NewHighScoreScreen>(
                             NewHighScoreScreen::create(score)
                         ));

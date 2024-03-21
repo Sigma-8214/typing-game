@@ -5,6 +5,8 @@
 
 #include "word_shower.hpp"
 
+const auto CONFETTI = ParticleConfig::create(2, 1, {'*', '~', '.', '-'});
+
 void WordShower::spawn_word(uint16_t width) {
     auto word = word_list[rand() % word_list.size()];
 
