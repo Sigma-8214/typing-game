@@ -1,4 +1,5 @@
 #include "Windows.h"
+#include <iostream>
 
 #include "screen_menu.hpp"
 #include "ui.hpp"
@@ -14,7 +15,7 @@ void Ui::handle_inputs() {
 
     for (auto i = 0; i < *events; i++) {
         if (event_buffer[i].EventType == KEY_EVENT)
-            this->screen->on_key(*this, event_buffer[i].Event.KeyEvent);
+            this->screens.back()->on_key(*this, event_buffer[i].Event.KeyEvent);
     }
 }
 
@@ -23,29 +24,43 @@ Ui Ui::create(State state) {
     self.gui = Gui::create();
     self.running = true;
     self.state = state;
-    self.screen = std::make_shared<MenuScreen>(MenuScreen::create());
+    self.screens.push_back(std::make_unique<MenuScreen>(MenuScreen::create()));
     return self;
 }
 
 void Ui::run() {
+    std::cout << "\x1b\[?1049h";
+
     for (;;) {
         if (!running) {
             this->gui.cleanup();
+            std::cout << "\x1b\[?1049l";
             break;
         }
 
         this->handle_inputs();
-        this->screen->render(*this, gui);
+        this->screens.back()->render(*this, gui);
 
         // Will block to reach target framerate
         gui.update();
     }
 }
 
-void Ui::set_screen(std::shared_ptr<Screen> screen) {
-    this->screen = std::move(screen);
+void Ui::push_screen(std::unique_ptr<Screen> screen) {
+    this->screens.push_back(std::move(screen));
 }
 
-std::shared_ptr<Screen> Ui::get_screen() { return this->screen; }
+std::unique_ptr<Screen> Ui::pop_screen() {
+    auto old = std::move(this->screens.back());
+    this->screens.pop_back();
+    return old;
+}
+
+std::unique_ptr<Screen> Ui::swap_screen(std::unique_ptr<Screen> screen) {
+    auto old = std::move(this->screens.back());
+    this->screens.pop_back();
+    this->screens.push_back(std::move(screen));
+    return old;
+}
 
 void Ui::exit() { this->running = false; }

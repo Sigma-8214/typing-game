@@ -51,7 +51,7 @@ void MenuScreen::on_key(Ui &ui, KEY_EVENT_RECORD key) {
     if (key.bKeyDown && key.wVirtualKeyCode == VK_ESCAPE)
         ui.exit();
     else if (key.bKeyDown && key.wVirtualKeyCode == VK_RETURN)
-        ui.set_screen(std::make_unique<GameScreen>(GameScreen::create(ui)));
+        ui.push_screen(std::make_unique<GameScreen>(GameScreen::create(ui)));
 }
 
 MenuScreen::Ball MenuScreen::Ball::create(Point2i size) {

@@ -38,14 +38,13 @@ void GameScreen::on_key(Ui &ui, KEY_EVENT_RECORD key) {
         return;
 
     if (key.wVirtualKeyCode == VK_ESCAPE) {
-        auto old_screen = ui.get_screen();
-        ui.set_screen(std::make_unique<ConfirmScreen>(ConfirmScreen::create(
+        ui.push_screen(std::make_unique<ConfirmScreen>(ConfirmScreen::create(
             "Are you sure you want to exit?", {"No", "Yes"},
-            [old_screen](Ui &ui, uint8_t option) {
+            [](Ui &ui, uint8_t option) {
                 if (option == 1)
                     ui.exit();
                 else if (option == 0)
-                    ui.set_screen(old_screen);
+                    ui.pop_screen();
             }
         )));
         return;
