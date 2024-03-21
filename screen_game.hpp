@@ -5,6 +5,7 @@
 
 class GameScreen : public Screen {
     WordShower shower;
+    std::chrono::time_point<std::chrono::steady_clock> game_started;
     float32_t hue;
 
   public:

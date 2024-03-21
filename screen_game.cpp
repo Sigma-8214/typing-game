@@ -8,29 +8,33 @@
 GameScreen GameScreen::create(Ui &ui) {
     auto self = GameScreen();
     self.shower = WordShower::create(ui.state.words);
+    self.game_started = std::chrono::steady_clock::now();
     self.hue = 0;
     return self;
 }
 
 void GameScreen::render(Ui &ui, Gui &gui) {
+    auto size = gui.get_size();
+
     shower.draw(gui);
 
-    // == Draw the title ==
-    draw_rainbow_text(Point2i::origin(), "Word Shower", &hue, gui);
-
-    // == Draw bottom bar ==
     gui.draw_text(
-        Point2i::create(0, gui.get_height() - 1),
-        "[ESC] Quit | [+/-] Increase/Decrease Max Words ", Style::unstyled()
+        size - Point2i::create(11, 1), "[ESC] Quit", Style::unstyled()
     );
 
-    // == Show Stats ==
+    auto delta = std::chrono::steady_clock::now() - game_started;
+    auto seconds =
+        std::chrono::duration_cast<std::chrono::seconds>(delta).count();
+
+    auto words = std::to_string(shower.typed) + " words";
     gui.draw_text(
-        Point2i::create(0, 2), "Words: " + std::to_string(shower.max_words),
+        Point2i::create(size.x / 2 - words.size() / 2, 0), words,
         Style::unstyled()
     );
+
+    auto time = std::to_string(seconds) + "s";
     gui.draw_text(
-        Point2i::create(0, 3), "Typed: " + std::to_string(shower.typed),
+        Point2i::create(size.x / 2 - time.size() / 2, 1), time,
         Style::unstyled()
     );
 }
@@ -57,12 +61,6 @@ void GameScreen::on_key(Ui &ui, KEY_EVENT_RECORD key) {
         )));
         return;
     }
-
-    if (key.wVirtualKeyCode == VK_OEM_PLUS)
-        shower.max_words++;
-
-    if (key.wVirtualKeyCode == VK_OEM_MINUS)
-        shower.max_words--;
 
     auto typed_char = key.uChar.AsciiChar;
     if (typed_char >= 32 && typed_char <= 126)
