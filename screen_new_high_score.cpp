@@ -1,6 +1,7 @@
 #include "screen_new_high_score.hpp"
 #include "drawing.hpp"
 #include "screen_confirm.hpp"
+#include "screen_scores.hpp"
 
 NewHighScoreScreen NewHighScoreScreen::create(uint32_t score) {
     auto self = NewHighScoreScreen();
@@ -49,7 +50,7 @@ void NewHighScoreScreen::on_key(Ui &ui, KEY_EVENT_RECORD key) {
 
     if (key.wVirtualKeyCode == VK_RETURN) {
         ui.state.scores.add_score(Score::create(name, score));
-        ui.pop_screen();
+        ui.swap_screen(std::make_unique<ScoresScreen>());
     }
 
     if (key.wVirtualKeyCode == VK_BACK && name.length() > 0)
