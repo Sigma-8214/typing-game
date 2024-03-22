@@ -44,9 +44,14 @@ void Game::draw(Gui &gui) {
 
     for (auto i = 0; i < words.size(); i++) {
         auto &word = words[i];
-        word.render(gui, i == current_word);
+        auto current = current_word.has_value() && i == current_word.value();
 
+        word.render(gui, current);
+
+        auto out_of_range = word.is_out_of_range(gui);
         auto was_typed = word.is_complete();
+        if (lives > 0)
+            lives -= out_of_range;
         typed += was_typed;
 
         if (was_typed) {
@@ -61,10 +66,12 @@ void Game::draw(Gui &gui) {
                 );
         }
 
-        if (word.is_out_of_range(gui) || was_typed) {
+        if (out_of_range || was_typed) {
+            if (current)
+                current_word = std::nullopt;
+
             first_chars.erase(word.get_word()[0]);
             words.erase(words.begin() + i--);
-            current_word = std::nullopt;
         }
     }
 }
@@ -83,3 +90,7 @@ void Game::typed_char(char character) {
         }
     }
 }
+
+uint8_t Game::get_lives() const { return lives; }
+
+uint32_t Game::get_typed() const { return typed; }

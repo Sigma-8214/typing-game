@@ -5,6 +5,8 @@
 #include "screen_confirm.hpp"
 #include "screen_scores.hpp"
 
+#include <iostream>
+
 const auto CONFETTI = ParticleConfig::create(8, 3, {'*', '~', '.', '-'});
 
 NewHighScoreScreen NewHighScoreScreen::create(uint32_t score) {
