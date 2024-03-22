@@ -33,10 +33,11 @@ Game Game::create(std::vector<std::string> words) {
 }
 
 void Game::draw(Gui &gui) {
-    while (words.size() < max_words)
+    auto local_max_words = max_words + typed / 10;
+    while (words.size() < local_max_words)
         spawn_word(gui.get_width());
 
-    while (words.size() > max_words)
+    while (words.size() > local_max_words)
         words.pop_back();
 
     confetti.render(gui);

@@ -1,0 +1,3 @@
+[submodule "include/grapheme-splitter"]
+	path = include/grapheme-splitter
+	url = https://github.com/Mytherin/grapheme-splitter-cpp

@@ -1,10 +1,10 @@
+#include <iostream>
+
 #include "screen_game.hpp"
 #include "consts.hpp"
 #include "game.hpp"
 #include "screen_confirm.hpp"
 #include "screen_new_high_score.hpp"
-
-#include <iostream>
 
 GameScreen GameScreen::create(Ui &ui) {
     auto self = GameScreen();
@@ -50,12 +50,12 @@ void GameScreen::on_key(Ui &ui, KEY_EVENT_RECORD key) {
             "Are you sure you want to exit?", {"No", "Yes"},
             [score](Ui &ui, uint8_t option) {
                 if (option == 1) {
+                    auto screen = NewHighScoreScreen::create(score);
                     ui.pop_screen(2);
                     if (score > 0 &&
-                        ui.state.scores.is_high_score(score, HIGH_SCORES_COUNT))
-                        ui.push_screen(std::make_unique<NewHighScoreScreen>(
-                            NewHighScoreScreen::create(score)
-                        ));
+                        ui.state.scores.is_high_score(score, HIGH_SCORES_COUNT)) {
+                        ui.push_screen(std::make_unique<NewHighScoreScreen>(screen));
+                    }
                 } else if (option == 0)
                     ui.pop_screen();
             }
