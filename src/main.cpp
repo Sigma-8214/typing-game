@@ -1,11 +1,11 @@
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include "ui.hpp"
 
-std::vector<std::string> load_words(const std::string& path) {
+std::vector<std::string> load_words(const std::string &path) {
     auto words = std::vector<std::string>();
     auto file = std::ifstream(path);
 
@@ -30,4 +30,3 @@ int main() {
     ui.run();
     return 0;
 }
-

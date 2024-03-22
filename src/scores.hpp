@@ -28,5 +28,5 @@ class Scores {
 
     std::vector<Score> get_scores(size_t count) const;
     std::vector<Score> get_scores() const;
-    void add_score(const Score&);
+    void add_score(const Score &);
 };

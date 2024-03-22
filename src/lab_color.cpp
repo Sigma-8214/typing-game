@@ -13,9 +13,12 @@ OkLab OkLab::create(float32_t L, float32_t a, float32_t b) {
 
 // From https://bottosson.github.io/posts/oklab
 OkLab OkLab::from_lsrgb(Rgb c) {
-    float32_t l = 0.4122214708f * c.r + 0.5363325363f * c.g + 0.0514459929f * c.b;
-    float32_t m = 0.2119034982f * c.r + 0.6806995451f * c.g + 0.1073969566f * c.b;
-    float32_t s = 0.0883024619f * c.r + 0.2817188376f * c.g + 0.6299787005f * c.b;
+    float32_t l =
+        0.4122214708f * c.r + 0.5363325363f * c.g + 0.0514459929f * c.b;
+    float32_t m =
+        0.2119034982f * c.r + 0.6806995451f * c.g + 0.1073969566f * c.b;
+    float32_t s =
+        0.0883024619f * c.r + 0.2817188376f * c.g + 0.6299787005f * c.b;
 
     float32_t l_ = cbrtf(l);
     float32_t m_ = cbrtf(m);

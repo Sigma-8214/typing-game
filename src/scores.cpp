@@ -79,7 +79,7 @@ std::vector<Score> Scores::get_scores(size_t count) const {
 
 std::vector<Score> Scores::get_scores() const { return scores; }
 
-void Scores::add_score(const Score& score) {
+void Scores::add_score(const Score &score) {
     auto found = false;
     for (auto i = 0; i < scores.size(); i++) {
         if (score.get_score() > scores[i].get_score()) {

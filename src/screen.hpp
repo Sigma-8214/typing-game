@@ -14,4 +14,3 @@ class Screen {
     virtual void render(Ui &ui, Gui &gui) = 0;
     virtual void on_key(Ui &ui, KEY_EVENT_RECORD key) = 0;
 };
-
