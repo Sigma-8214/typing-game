@@ -3,6 +3,7 @@
 #include "particle_emitter.hpp"
 #include "screen_confirm.hpp"
 #include "screen_scores.hpp"
+#include "consts.hpp"
 
 const auto CONFETTI = ParticleConfig::create(8, 3, {'*', '~', '.', '-'});
 

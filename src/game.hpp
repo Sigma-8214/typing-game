@@ -19,7 +19,7 @@ class Game {
 
   public:
     uint8_t max_words = 5;
-    uint32_t typed;
+    uint32_t typed = 0;
 
     static Game create(std::vector<std::string> words);
 
