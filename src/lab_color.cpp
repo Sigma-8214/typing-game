@@ -1,4 +1,4 @@
-#include <math.h>
+#include <cmath>
 
 #include "consts.hpp"
 #include "lab_color.hpp"
@@ -13,13 +13,13 @@ OkLab OkLab::create(float32_t L, float32_t a, float32_t b) {
 
 // From https://bottosson.github.io/posts/oklab
 OkLab OkLab::from_lsrgb(Rgb c) {
-    float l = 0.4122214708f * c.r + 0.5363325363f * c.g + 0.0514459929f * c.b;
-    float m = 0.2119034982f * c.r + 0.6806995451f * c.g + 0.1073969566f * c.b;
-    float s = 0.0883024619f * c.r + 0.2817188376f * c.g + 0.6299787005f * c.b;
+    float32_t l = 0.4122214708f * c.r + 0.5363325363f * c.g + 0.0514459929f * c.b;
+    float32_t m = 0.2119034982f * c.r + 0.6806995451f * c.g + 0.1073969566f * c.b;
+    float32_t s = 0.0883024619f * c.r + 0.2817188376f * c.g + 0.6299787005f * c.b;
 
-    float l_ = cbrtf(l);
-    float m_ = cbrtf(m);
-    float s_ = cbrtf(s);
+    float32_t l_ = cbrtf(l);
+    float32_t m_ = cbrtf(m);
+    float32_t s_ = cbrtf(s);
 
     return {
         0.2104542553f * l_ + 0.7936177850f * m_ - 0.0040720468f * s_,

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../tui_engine/tui.hpp"
+#include "consts.hpp"
 
 class Rgb;
 

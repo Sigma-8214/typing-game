@@ -1,4 +1,5 @@
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "../tui_engine/tui.hpp"
@@ -26,7 +27,7 @@ void Game::spawn_word(uint16_t width) {
 
 Game Game::create(std::vector<std::string> words) {
     auto self = Game();
-    self.word_list = words;
+    self.word_list = std::move(words);
     self.confetti = ParticleEmitter::create(CONFETTI);
     return self;
 }

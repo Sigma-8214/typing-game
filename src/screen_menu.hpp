@@ -2,7 +2,6 @@
 
 #include <math.h>
 
-#include "misc.hpp"
 #include "ui.hpp"
 
 class MenuScreen : public Screen {
